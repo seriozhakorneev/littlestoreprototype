@@ -1,0 +1,142 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Корзина</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+          font-size: 1.125rem;
+          text-anchor: middle;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+        }
+  
+        @media (min-width: 768px) {
+          .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+          }
+        }
+  
+        .header{background:rgb(0, 178, 255);color:#fff;}
+        #lblCartCount {
+            font-size: 12px;
+            background: #ff0000;
+            color: #fff;
+            padding: 0 5px;
+            vertical-align: top;
+            margin-left: -10px;
+        }
+        .badge {
+          padding-left: 9px;
+          padding-right: 9px;
+          -webkit-border-radius: 9px;
+          -moz-border-radius: 9px;
+          border-radius: 9px;
+        }
+  
+        .label-warning[href],
+        .badge-warning[href] {
+          background-color: #c67605;
+        }
+  
+      </style>
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'store/css/carousel.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <main>  
+      
+      <br><br>
+
+      <div class="container marketing">
+        
+         <!-- Three columns of text below the carousel -->
+        <div class="row">
+            {% if request.session.s_basket|length != 0 %}
+                {% for product in products_in_basket %}
+                    <div class="col-lg-4">
+                        <a href="{% url 'store:detail' product.id %}">
+                          <img class="rounded-circle" src="{{ product.image1.url }}" alt="Generic placeholder image" width="190" height="190">
+                        </a>
+                        <h2>{{ product.name }}</h2>
+                        <h2>{{ product.price }}</h2>
+                        <p>{{ product.description }}</p>
+                        {% if request.session.s_basket|length != 1 %}
+                          <form action="{% url 'store:delete_product_from_s_basket' product.id %}" method="post">
+                            {% csrf_token %}
+                            <p><input class="btn btn-secondary" type="submit" value="Удалить"></p>
+                          </form>
+                        {% else %}                                           
+                          <form action="{% url 'store:clear_s_basket' %}" method="post">
+                            {% csrf_token %}
+                            <p><input class="btn btn-secondary" type="submit" value="Удалить"></p>
+                          </form>
+                        {% endif %}
+                    </div><!-- /.col-lg-4 -->
+                {% endfor %}
+
+            {% else %}
+                <hr class="featurette-divider">
+                <h2 class="featurette-heading text-center">Корзина пуста</h2>
+                <br>
+                <h4 class="text-muted text-center">
+                    <a  href="{% url 'store:index' %}">Главная</a>
+                </h4>
+            {% endif %}
+            
+        </div><!-- /.row -->
+        <hr class="featurette-divider">
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Товаров: {{ request.session.s_basket|length }}</h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <h2>На сумму: <span class="text-success">{{ s_basket_sum }} ₽</span></h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <p><a class="btn btn-secondary" href="#" role="button">Оформить</a></p>
+            </div><!-- /.col-lg-4 -->
+        </div>
+            
+        
+      </div><!-- /.container -->
+      <br>
+    </main>
+    
+    <!-- sticky footer -->
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a style="font-size: 24px;" class="navbar-brand" href="{% url 'store:index' %}">Магазин</a>
+          <ul class="navbar-nav">
+            {% if request.session.s_basket|length > 0 %}
+              <li class="navbar-brand">
+                <a class="nav-link" aria-current="page" href="#">
+                    <i class="fa" style="font-size:35px">&#xf07a;</i>
+                    <span class='badge badge-warning' id='lblCartCount'>{{ request.session.s_basket|length }}</span>
+                    <span class="text-success">{{ s_basket_sum }} ₽</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="navbar-brand text-muted">
+                <span class="nav-link" aria-current="page">
+                  <i class="fa" style="font-size:24px">&#xf07a;</i>
+                  <span class="text-success">{{ s_basket_sum }} ₽</span>
+                </span>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+
+    <script src="{% static 'store/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

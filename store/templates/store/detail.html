@@ -1,0 +1,211 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>{{ current_product.name }}</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .header{background:rgb(0, 178, 255);color:#fff;}
+      #lblCartCount {
+          font-size: 12px;
+          background: #ff0000;
+          color: #fff;
+          padding: 0 5px;
+          vertical-align: top;
+          margin-left: -10px;
+      }
+      .badge {
+        padding-left: 9px;
+        padding-right: 9px;
+        -webkit-border-radius: 9px;
+        -moz-border-radius: 9px;
+        border-radius: 9px;
+      }
+
+      .label-warning[href],
+      .badge-warning[href] {
+        background-color: #c67605;
+      }
+
+      .carousel-inner > .carousel-item > img {
+      height: 100vh;
+      }
+      
+    </style>
+    
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'store/css/carousel.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <main>  
+      
+      <br><br>
+
+      <div class="container marketing">
+        <div class="row featurette">
+
+          <div class="col-md-6">
+            <video width="100%" height="70%" autoplay muted loop>
+              <source src="{{ current_product.video.url }}" type="video/mp4">
+              <!--<source src="movie.ogg" type="{{ current_product.video.url }}">-->
+            Your browser does not support the video tag.
+            </video>
+            <div class="col px-md-5">{{ current_product.description }}</div>
+            <!--ahuennoe reshenie-->
+            <br><br><br><br><br><br>
+            <br><br><br><br><br><br>
+          </div>
+
+          <div class="col-md-6">
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <a data-bs-toggle="modal" data-bs-target="#exampleModal1" href="">
+                    <img src="{{ current_product.image1.url }}" class="d-block w-100" alt="...">
+                  </a>
+                </div>
+                <div class="carousel-item">
+                  <a data-bs-toggle="modal" data-bs-target="#exampleModal2" href="">
+                    <img src="{{ current_product.image2.url }}" class="d-block w-100" alt="...">
+                  </a>
+                </div>
+                <div class="carousel-item">
+                  <a data-bs-toggle="modal" data-bs-target="#exampleModal3" href="">
+                    <img src="{{ current_product.image3.url }}" class="d-block w-100" alt="...">
+                  </a>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+
+            <h2>{{ current_product.name }}</h2>
+            <h2>Стоимость: <span class="text-success">{{ current_product.price }} ₽</span></h2>
+            {% if not request.session.s_basket %}
+              <form action="{% url 'store:add_product_to_s_basket' current_product.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <input class="btn btn-success" type="submit" value="В Корзину">
+              </form>
+            {% elif current_product.id not in request.session.s_basket %}
+              <form action="{% url 'store:add_product_to_s_basket' current_product.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <input class="btn btn-success" type="submit" value="В Корзину">
+              </form>
+              {% elif current_product.id in request.session.s_basket %}
+                <h6 class="text-muted">Товар добавлен в корзину</h6>
+            {% endif %}
+          </div>
+
+        </div>
+        <!-- /END THE FEATURETTES -->
+      </div><!-- /.container -->
+      
+      <br><br>
+
+    </main>
+
+    <!-- Modals -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">.
+        <div class="modal-content">
+          <div style="border: none;" class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img class="img-fluid mx-auto" src="{{ current_product.image1.url }}">
+          </div>   
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">.
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img class="img-fluid mx-auto" src="{{ current_product.image2.url }}">
+          </div>   
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">.
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img class="img-fluid mx-auto" src="{{ current_product.image3.url }}">
+          </div>   
+        </div>
+      </div>
+    </div>
+
+    <!-- sticky footer -->
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a style="font-size: 24px;" class="navbar-brand" href="{% url 'store:index' %}">Магазин</a>
+        {% if messages %}
+          {% for message in messages %}
+          <small style="color:white;">{{ message }}</small>
+          {% endfor %}
+        {% endif %}
+        <ul class="navbar-nav">
+          {% if request.session.s_basket|length > 0 %}
+            <li class="navbar-brand">
+              <a class="nav-link" aria-current="page" href="{% url 'store:basket' %}">
+                  <i class="fa" style="font-size:35px">&#xf07a;</i>
+                  <span class='badge badge-warning' id='lblCartCount'>{{ request.session.s_basket|length }}</span>
+                  <span class="text-success">{{ s_basket_sum }} ₽</span>
+              </a>
+            </li>
+          {% else %}
+            <li class="navbar-brand text-muted">
+              <span class="nav-link" aria-current="page">
+                <i class="fa" style="font-size:35px">&#xf07a;</i>
+                <span class="text-success">{{ s_basket_sum }} ₽</span>
+              </span>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <script src="{% static 'store/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>
